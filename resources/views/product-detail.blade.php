@@ -72,6 +72,7 @@
 
             {{-- Action Buttons --}}
             <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                {{-- Add to Cart form (POST) --}}
                 <form id="addToCartForm" action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
                     @csrf
                     <input type="hidden" name="milk" id="selected_milk" value="Classic">
@@ -81,9 +82,17 @@
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                     </button>
                 </form>
-                <a href="{{ route('checkout.form') }}" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-center">
-                    <i class="fas fa-bolt"></i> Order Now
-                </a>
+
+                {{-- Order Now form (POST) dengan data pilihan --}}
+                <form action="{{ route('checkout.direct', $product->id) }}" method="POST" class="flex-1">
+                    @csrf
+                    <input type="hidden" name="milk" id="direct_milk" value="Classic">
+                    <input type="hidden" name="size" id="direct_size" value="280">
+                    <input type="hidden" name="final_price" id="direct_final_price" value="{{ $product->price }}">
+                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fas fa-bolt"></i> Order Now
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -95,7 +104,11 @@
     const finalPriceInput = document.getElementById('final_price');
     const selectedMilkInput = document.getElementById('selected_milk');
     const selectedSizeInput = document.getElementById('selected_size');
+    const directMilkInput = document.getElementById('direct_milk');
+    const directSizeInput = document.getElementById('direct_size');
+    const directFinalPriceInput = document.getElementById('direct_final_price');
 
+    // Update harga saat size berubah
     function updatePrice() {
         let activeSize = document.querySelector('.size-option.bg-amber-800');
         if (!activeSize) return;
@@ -104,8 +117,11 @@
         priceElem.innerText = 'Rp ' + newPrice.toLocaleString('id-ID');
         finalPriceInput.value = newPrice;
         selectedSizeInput.value = activeSize.dataset.size;
+        directSizeInput.value = activeSize.dataset.size;
+        directFinalPriceInput.value = newPrice;
     }
 
+    // Event handler untuk size options
     document.querySelectorAll('.size-option').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.size-option').forEach(opt => {
@@ -118,6 +134,7 @@
         });
     });
 
+    // Event handler untuk milk options
     document.querySelectorAll('.milk-option').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.milk-option').forEach(opt => {
@@ -126,19 +143,21 @@
             });
             this.classList.add('bg-amber-800', 'text-white');
             this.classList.remove('bg-white', 'text-amber-800');
-            selectedMilkInput.value = this.dataset.milk;
+            const milkValue = this.dataset.milk;
+            selectedMilkInput.value = milkValue;
+            directMilkInput.value = milkValue;
         });
     });
 
     updatePrice();
 
-    // AJAX untuk favorite toggle tanpa reload
+    // AJAX untuk favorite toggle
     const favForm = document.getElementById('favorite-form');
     if (favForm) {
         favForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const url = this.action;
-            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -153,11 +172,9 @@
                 if (data.success) {
                     const icon = document.getElementById('favorite-icon');
                     if (data.favorited) {
-                        // Ganti ke solid heart merah
                         icon.classList.remove('far', 'fa-heart', 'text-gray-500');
                         icon.classList.add('fas', 'fa-heart', 'text-red-500');
                     } else {
-                        // Ganti ke outline heart abu-abu
                         icon.classList.remove('fas', 'fa-heart', 'text-red-500');
                         icon.classList.add('far', 'fa-heart', 'text-gray-500');
                     }

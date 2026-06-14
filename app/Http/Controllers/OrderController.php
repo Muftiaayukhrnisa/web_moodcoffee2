@@ -28,31 +28,42 @@ class OrderController extends Controller
 
     /**
      * Checkout langsung (Order Now) tanpa melalui keranjang.
-     * Menyimpan item ke session untuk diproses saat submit.
+     * Menerima pilihan size, milk, final_price dari form POST.
      */
-    public function directCheckout(Product $product)
+    public function directCheckout(Request $request, Product $product)
     {
-        // Simpan data produk ke session untuk sementara
-        $directItem = [
+        // Ambil data dari form
+        $size = $request->input('size', '280');
+        $milk = $request->input('milk', 'Classic');
+        $finalPrice = $request->input('final_price', $product->price);
+
+        // Simpan item ke session untuk digunakan saat store
+        session()->put('direct_checkout_items', [[
             'product_id' => $product->id,
             'quantity'   => 1,
-            'size'       => '280',        // default size
-            'milk'       => 'Classic',    // default milk
-            'unit_price' => $product->price,
-        ];
-        session()->put('direct_checkout_items', [$directItem]);
+            'size'       => $size,
+            'milk'       => $milk,
+            'unit_price' => $finalPrice,
+        ]]);
 
-        // Buat koleksi item untuk ditampilkan di view checkout
+        // Buat koleksi untuk ditampilkan di view checkout
         $cartItems = collect([
-            (object) array_merge($directItem, ['product' => $product])
+            (object) [
+                'product_id' => $product->id,
+                'product'    => $product,
+                'quantity'   => 1,
+                'size'       => $size,
+                'milk'       => $milk,
+                'unit_price' => $finalPrice,
+            ]
         ]);
-        $total = $product->price;
+        $total = $finalPrice;
 
         return view('checkout', compact('cartItems', 'total'));
     }
 
     /**
-     * Menyimpan pesanan (baik dari keranjang atau direct checkout).
+     * Menyimpan pesanan (dari keranjang atau direct checkout).
      */
     public function store(Request $request)
     {

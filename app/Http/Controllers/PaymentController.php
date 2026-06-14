@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Picqer\Barcode\BarcodeGeneratorHTML;
+use Picqer\Barcode\BarcodeGeneratorHTML; // Import untuk barcode generator
 
 class PaymentController extends Controller
 {
@@ -43,7 +43,7 @@ class PaymentController extends Controller
         }
         $order->update([
             'payment_status' => 'paid',
-            'order_status' => 'processing'
+            'order_status'   => 'processing'
         ]);
         return view('payment-success', compact('order'));
     }

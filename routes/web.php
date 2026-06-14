@@ -40,18 +40,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 
     // Checkout dan pembayaran
-    Route::get('/checkout', [OrderController::class, 'checkoutForm'])->name('checkout.form'); // checkout dari keranjang
+    Route::get('/checkout', [OrderController::class, 'checkoutForm'])->name('checkout.form');
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
-    Route::get('/checkout/direct/{product}', [OrderController::class, 'directCheckout'])->name('checkout.direct'); // langsung checkout tanpa keranjang (Order Now)
+    
+    // Order Now langsung (menerima GET dan POST)
+    Route::match(['get', 'post'], '/checkout/direct/{product}', [OrderController::class, 'directCheckout'])->name('checkout.direct');
 
-    // Halaman pembayaran spesifik (langsung diarahkan setelah checkout)
+    // Halaman pembayaran spesifik
     Route::get('/payment/{order}/qris', [PaymentController::class, 'showQris'])->name('payment.qris');
     Route::get('/payment/{order}/cashier', [PaymentController::class, 'showCashier'])->name('payment.cashier');
     
-    // Konfirmasi pembayaran sukses (di-trigger dari tombol simulasi di halaman payment)
+    // Konfirmasi pembayaran sukses (simulasi)
     Route::post('/payment/success/{order}', [PaymentController::class, 'success'])->name('payment.success');
     
-    // Barcode untuk pembayaran di kasir (jika perlu ditampilkan ulang)
+    // Barcode untuk pembayaran di kasir
     Route::get('/order/{order}/barcode', [OrderController::class, 'showBarcode'])->name('order.barcode');
 
     // Riwayat pesanan dan detail
