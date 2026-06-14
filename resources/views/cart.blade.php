@@ -7,8 +7,11 @@
         <div class="space-y-4">
             @foreach($cartItems as $item)
             <div class="bg-white rounded-2xl shadow-sm p-4 flex flex-col sm:flex-row gap-4">
-                <div class="w-24 h-24 bg-amber-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-coffee text-3xl text-amber-600"></i>
+                {{-- Gambar produk --}}
+                <div class="w-24 h-24 rounded-xl overflow-hidden bg-amber-50 flex-shrink-0">
+                    <img src="{{ $item->product->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
+                         alt="{{ $item->product->name }}" 
+                         class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1">
                     <h3 class="font-bold text-gray-800">

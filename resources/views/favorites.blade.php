@@ -29,12 +29,14 @@
             @foreach($favorites as $fav)
             <div class="fav-item bg-white rounded-2xl p-4 shadow-sm border border-gray-100" data-name="{{ strtolower($fav->product->name) }}">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 flex-shrink-0">
-                        <i class="fas fa-coffee text-2xl"></i>
+                    {{-- Gambar produk --}}
+                    <div class="w-16 h-16 rounded-xl overflow-hidden bg-amber-50 flex-shrink-0">
+                        <img src="{{ $fav->product->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
+                             alt="{{ $fav->product->name }}" 
+                             class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1">
                         <h3 class="font-bold text-gray-800">{{ $fav->product->name }}</h3>
-                        {{-- Harga tidak ditampilkan --}}
                     </div>
                     <div>
                         <a href="{{ route('product.show', $fav->product->id) }}" 

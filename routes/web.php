@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payment/{order}/qris', [PaymentController::class, 'showQris'])->name('payment.qris');
     Route::get('/payment/{order}/cashier', [PaymentController::class, 'showCashier'])->name('payment.cashier');
     
-    // Konfirmasi pembayaran sukses (simulasi)
+    // Konfirmasi pembayaran sukses (simulasi) - Tombol "Cek Status Pembayaran" di payment cashier
     Route::post('/payment/success/{order}', [PaymentController::class, 'success'])->name('payment.success');
     
     // Barcode untuk pembayaran di kasir

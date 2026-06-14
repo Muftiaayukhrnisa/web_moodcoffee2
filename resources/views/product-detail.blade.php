@@ -3,9 +3,11 @@
 @section('content')
 <div class="max-w-4xl mx-auto px-4 py-6">
     <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-        {{-- Product Image Placeholder --}}
-        <div class="w-full h-64 bg-amber-50 flex items-center justify-center text-amber-500 relative">
-            <i class="fas fa-coffee text-6xl"></i>
+        {{-- Product Image --}}
+        <div class="w-full h-80 bg-amber-50 relative overflow-hidden">
+            <img src="{{ $product->image_url ?? 'https://placehold.co/800x600?text=No+Image' }}" 
+                 alt="{{ $product->name }}" 
+                 class="w-full h-full object-cover">
             {{-- Tombol Favorite --}}
             <form action="{{ route('favorite.toggle', $product->id) }}" method="POST" id="favorite-form" class="absolute top-4 right-4">
                 @csrf
@@ -26,7 +28,7 @@
                 </div>
             </div>
 
-            {{-- Options Milk & Size dengan kotak --}}
+            {{-- Options Milk & Size --}}
             <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <h3 class="font-semibold text-gray-700 mb-2">Milk</h3>
@@ -72,7 +74,6 @@
 
             {{-- Action Buttons --}}
             <div class="mt-6 flex flex-col sm:flex-row gap-4">
-                {{-- Add to Cart form (POST) --}}
                 <form id="addToCartForm" action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
                     @csrf
                     <input type="hidden" name="milk" id="selected_milk" value="Classic">
@@ -82,8 +83,6 @@
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                     </button>
                 </form>
-
-                {{-- Order Now form (POST) dengan data pilihan --}}
                 <form action="{{ route('checkout.direct', $product->id) }}" method="POST" class="flex-1">
                     @csrf
                     <input type="hidden" name="milk" id="direct_milk" value="Classic">
@@ -108,7 +107,6 @@
     const directSizeInput = document.getElementById('direct_size');
     const directFinalPriceInput = document.getElementById('direct_final_price');
 
-    // Update harga saat size berubah
     function updatePrice() {
         let activeSize = document.querySelector('.size-option.bg-amber-800');
         if (!activeSize) return;
@@ -121,7 +119,6 @@
         directFinalPriceInput.value = newPrice;
     }
 
-    // Event handler untuk size options
     document.querySelectorAll('.size-option').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.size-option').forEach(opt => {
@@ -134,7 +131,6 @@
         });
     });
 
-    // Event handler untuk milk options
     document.querySelectorAll('.milk-option').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.milk-option').forEach(opt => {

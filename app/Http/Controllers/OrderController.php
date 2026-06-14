@@ -28,16 +28,13 @@ class OrderController extends Controller
 
     /**
      * Checkout langsung (Order Now) tanpa melalui keranjang.
-     * Menerima pilihan size, milk, final_price dari form POST.
      */
     public function directCheckout(Request $request, Product $product)
     {
-        // Ambil data dari form
         $size = $request->input('size', '280');
         $milk = $request->input('milk', 'Classic');
         $finalPrice = $request->input('final_price', $product->price);
 
-        // Simpan item ke session untuk digunakan saat store
         session()->put('direct_checkout_items', [[
             'product_id' => $product->id,
             'quantity'   => 1,
@@ -46,7 +43,6 @@ class OrderController extends Controller
             'unit_price' => $finalPrice,
         ]]);
 
-        // Buat koleksi untuk ditampilkan di view checkout
         $cartItems = collect([
             (object) [
                 'product_id' => $product->id,
@@ -72,17 +68,12 @@ class OrderController extends Controller
             'payment_method' => 'required|in:qris,cashier'
         ]);
 
-        // Cek apakah ini direct checkout (ada session)
         $directItems = session()->pull('direct_checkout_items', null);
         
         if ($directItems) {
-            // Direct checkout: buat koleksi item dari session
-            $cartItems = collect($directItems)->map(function ($item) {
-                return (object) $item;
-            });
+            $cartItems = collect($directItems)->map(fn($item) => (object) $item);
             $total = collect($directItems)->sum(fn($item) => $item['unit_price'] * $item['quantity']);
         } else {
-            // Dari keranjang biasa
             $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
             if ($cartItems->isEmpty()) {
                 return back()->withErrors('Keranjang kosong');
@@ -90,7 +81,6 @@ class OrderController extends Controller
             $total = $cartItems->sum(fn($item) => $item->unit_price * $item->quantity);
         }
 
-        // Simpan order
         $order = Order::create([
             'user_id'              => Auth::id(),
             'order_number'         => 'ORD-' . Str::random(6) . time(),
@@ -101,7 +91,6 @@ class OrderController extends Controller
             'qrcode_payment_token' => $request->payment_method == 'qris' ? Str::random(32) : null,
         ]);
 
-        // Simpan order items
         foreach ($cartItems as $item) {
             OrderItem::create([
                 'order_id'   => $order->id,
@@ -113,12 +102,10 @@ class OrderController extends Controller
             ]);
         }
 
-        // Hapus keranjang jika berasal dari keranjang biasa
         if (!$directItems) {
             Cart::where('user_id', Auth::id())->delete();
         }
 
-        // Redirect sesuai metode pembayaran
         if ($order->payment_method == 'qris') {
             return redirect()->route('payment.qris', $order);
         } else {
@@ -131,11 +118,13 @@ class OrderController extends Controller
      */
     public function history()
     {
-        $orders = Order::where('user_id', Auth::id())
+        $orders = Order::with('items.product')
+                       ->where('user_id', Auth::id())
                        ->orderBy('created_at', 'desc')
                        ->get();
+        $totalSpending = $orders->sum('total_amount'); // Total pengeluaran semua pesanan
         $cartCount = Cart::where('user_id', Auth::id())->count();
-        return view('order-history', compact('orders', 'cartCount'));
+        return view('order-history', compact('orders', 'totalSpending', 'cartCount'));
     }
 
     /**

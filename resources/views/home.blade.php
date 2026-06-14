@@ -33,8 +33,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach($recommended as $item)
             <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
-                <div class="w-full h-32 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
-                    <i class="fas fa-coffee text-4xl"></i>
+                {{-- Gambar produk --}}
+                <div class="w-full h-32 rounded-xl overflow-hidden bg-amber-50">
+                    <img src="{{ $item->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
+                         alt="{{ $item->name }}" 
+                         class="w-full h-full object-cover">
                 </div>
                 <h4 class="font-bold text-gray-800 mt-2 text-base">{{ $item->name }}</h4>
                 <p class="text-xs text-gray-500 line-clamp-2">{{ $item->description }}</p>
@@ -59,8 +62,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="menu-grid">
             @foreach($products as $item)
             <div class="menu-item bg-white rounded-2xl p-3 shadow-sm border border-gray-100" data-name="{{ strtolower($item->name) }}">
-                <div class="w-full h-32 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
-                    <i class="fas fa-coffee text-4xl"></i>
+                {{-- Gambar produk --}}
+                <div class="w-full h-32 rounded-xl overflow-hidden bg-amber-50">
+                    <img src="{{ $item->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
+                         alt="{{ $item->name }}" 
+                         class="w-full h-full object-cover">
                 </div>
                 <h4 class="font-bold text-gray-800 mt-2 text-base">{{ $item->name }}</h4>
                 <p class="text-xs text-gray-500 line-clamp-2">{{ $item->description }}</p>
