@@ -2,11 +2,24 @@
 @section('title', 'Home')
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    {{-- Header --}}
-    <div class="flex justify-between items-start mb-6">
-        <div>
-            <p class="text-gray-500 text-sm">Hey,</p>
-            <h1 class="text-2xl font-bold text-gray-800">{{ $username ?? 'User' }}</h1>
+    {{-- Header dengan gaya lebih menarik --}}
+    <div class="mb-6 border-b border-amber-200 pb-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-6 bg-amber-700 rounded-full"></div>
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">Welcome back</p>
+                        <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
+                            {{ $username ?? 'User' }}
+                            <span class="text-amber-600 text-xl">☕</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-amber-100 rounded-full p-2 shadow-sm">
+                <i class="fas fa-mug-hot text-amber-700 text-xl"></i>
+            </div>
         </div>
     </div>
 
@@ -21,7 +34,7 @@
     </div>
 
     {{-- Banner "moodcoffee" --}}
-    <div class="bg-amber-800 rounded-2xl p-4 mb-6 flex justify-between items-center">
+    <div class="bg-gradient-to-r from-amber-800 to-amber-700 rounded-2xl p-4 mb-6 flex justify-between items-center shadow-md">
         <span class="text-white font-semibold text-lg">moodcoffee</span>
         <span class="text-2xl text-white">☕</span>
     </div>
@@ -32,7 +45,7 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-3">Recommended for you</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($recommended as $item)
-            <div class="bg-white rounded-2xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg">
+            <div class="bg-white rounded-2xl p-4 shadow-md border border-gray-200 transition hover:shadow-lg">
                 <div class="w-full h-40 rounded-xl overflow-hidden bg-amber-50">
                     <img src="{{ $item->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
                          alt="{{ $item->name }}" 
@@ -60,7 +73,7 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-3">Menu Kopi</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="menu-grid">
             @foreach($products as $item)
-            <div class="menu-item bg-white rounded-2xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg" data-name="{{ strtolower($item->name) }}">
+            <div class="menu-item bg-white rounded-2xl p-4 shadow-md border border-gray-200 transition hover:shadow-lg" data-name="{{ strtolower($item->name) }}">
                 <div class="w-full h-40 rounded-xl overflow-hidden bg-amber-50">
                     <img src="{{ $item->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
                          alt="{{ $item->name }}" 
