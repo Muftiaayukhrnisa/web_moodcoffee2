@@ -30,25 +30,24 @@
     @if(isset($recommended) && count($recommended) > 0)
     <div class="mb-8">
         <h3 class="text-lg font-semibold text-gray-800 mb-3">Recommended for you</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($recommended as $item)
-            <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-100">
-                {{-- Gambar produk --}}
-                <div class="w-full h-32 rounded-xl overflow-hidden bg-amber-50">
+            <div class="bg-white rounded-2xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg">
+                <div class="w-full h-40 rounded-xl overflow-hidden bg-amber-50">
                     <img src="{{ $item->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
                          alt="{{ $item->name }}" 
                          class="w-full h-full object-cover">
                 </div>
-                <h4 class="font-bold text-gray-800 mt-2 text-base">{{ $item->name }}</h4>
-                <p class="text-xs text-gray-500 line-clamp-2">{{ $item->description }}</p>
-                <div class="flex items-center mt-1">
+                <h4 class="font-bold text-gray-800 mt-3 text-lg">{{ $item->name }}</h4>
+                <p class="text-xs text-gray-500 line-clamp-2 mt-1">{{ $item->description }}</p>
+                <div class="flex items-center mt-2">
                     <i class="fas fa-star text-yellow-400 text-xs"></i>
                     <span class="text-xs text-gray-700 ml-1">{{ number_format($item->rating, 1) }}</span>
                 </div>
-                <p class="font-semibold text-amber-800 text-sm mt-1">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+                <p class="font-semibold text-amber-800 text-md mt-2">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
                 <a href="{{ route('product.show', $item->id) }}" 
-                   class="w-full block text-center bg-amber-800 text-white text-xs py-1 rounded-lg hover:bg-amber-900 transition mt-2">
-                    Detail
+                   class="w-full block text-center border border-amber-800 text-amber-800 font-medium text-sm py-2 rounded-xl hover:bg-amber-800 hover:text-white transition mt-3">
+                    Lihat Detail
                 </a>
             </div>
             @endforeach
@@ -59,23 +58,22 @@
     {{-- Menu Kopi Section (Semua Produk) --}}
     <div>
         <h3 class="text-lg font-semibold text-gray-800 mb-3">Menu Kopi</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="menu-grid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="menu-grid">
             @foreach($products as $item)
-            <div class="menu-item bg-white rounded-2xl p-3 shadow-sm border border-gray-100" data-name="{{ strtolower($item->name) }}">
-                {{-- Gambar produk --}}
-                <div class="w-full h-32 rounded-xl overflow-hidden bg-amber-50">
+            <div class="menu-item bg-white rounded-2xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg" data-name="{{ strtolower($item->name) }}">
+                <div class="w-full h-40 rounded-xl overflow-hidden bg-amber-50">
                     <img src="{{ $item->image_url ?? 'https://placehold.co/400x400?text=No+Image' }}" 
                          alt="{{ $item->name }}" 
                          class="w-full h-full object-cover">
                 </div>
-                <h4 class="font-bold text-gray-800 mt-2 text-base">{{ $item->name }}</h4>
-                <p class="text-xs text-gray-500 line-clamp-2">{{ $item->description }}</p>
-                <div class="flex items-center justify-between mt-2">
-                    <span class="font-semibold text-amber-800 text-sm">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                <h4 class="font-bold text-gray-800 mt-3 text-lg">{{ $item->name }}</h4>
+                <p class="text-xs text-gray-500 line-clamp-2 mt-1">{{ $item->description }}</p>
+                <div class="flex items-center justify-between mt-3">
+                    <span class="font-semibold text-amber-800 text-md">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                 </div>
                 <a href="{{ route('product.show', $item->id) }}" 
-                   class="w-full block text-center bg-amber-800 text-white text-xs py-1 rounded-lg hover:bg-amber-900 transition mt-2">
-                    Detail
+                   class="w-full block text-center border border-amber-800 text-amber-800 font-medium text-sm py-2 rounded-xl hover:bg-amber-800 hover:text-white transition mt-3">
+                    Lihat Detail
                 </a>
             </div>
             @endforeach

@@ -1,28 +1,32 @@
 @extends('layouts.app')
 @section('title', $product->name)
 @section('content')
-<div class="max-w-4xl mx-auto px-4 py-6">
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-        {{-- Product Image --}}
-        <div class="w-full h-80 bg-amber-50 relative overflow-hidden">
-            <img src="{{ $product->image_url ?? 'https://placehold.co/800x600?text=No+Image' }}" 
-                 alt="{{ $product->name }}" 
-                 class="w-full h-full object-cover">
-            {{-- Tombol Favorite --}}
-            <form action="{{ route('favorite.toggle', $product->id) }}" method="POST" id="favorite-form" class="absolute top-4 right-4">
-                @csrf
-                <button type="submit" id="favorite-btn" class="bg-white rounded-full p-2 shadow-md hover:scale-105 transition">
-                    <i id="favorite-icon" class="{{ ($isFavorited ?? false) ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-500' }} text-2xl"></i>
-                </button>
-            </form>
+<div class="w-full min-h-screen bg-amber-50">
+    {{-- Hero Image (Cover) --}}
+    <div class="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+        <img src="{{ $product->image_url ?? 'https://placehold.co/1200x800?text=No+Image' }}" 
+             alt="{{ $product->name }}" 
+             class="w-full h-full object-cover">
+        {{-- Tombol Favorite --}}
+        <form action="{{ route('favorite.toggle', $product->id) }}" method="POST" id="favorite-form" class="absolute top-4 right-4 z-10">
+            @csrf
+            <button type="submit" id="favorite-btn" class="bg-white rounded-full p-2 shadow-md hover:scale-105 transition">
+                <i id="favorite-icon" class="{{ ($isFavorited ?? false) ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-500' }} text-2xl"></i>
+            </button>
+        </form>
+        {{-- Overlay gradasi bawah untuk teks --}}
+        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
+        {{-- Nama dan deskripsi di overlay --}}
+        <div class="absolute bottom-6 left-6 text-white">
+            <h1 class="text-3xl md:text-4xl font-bold drop-shadow-lg">{{ $product->name }}</h1>
+            <p class="text-sm md:text-base opacity-90">{{ $product->description }}</p>
         </div>
+    </div>
 
-        <div class="p-6">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">{{ $product->name }}</h1>
-                    <p class="text-gray-600 mt-1">{{ $product->description }}</p>
-                </div>
+    {{-- Detail konten (card putih) --}}
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-lg p-6 -mt-8 relative z-10">
+            <div class="flex justify-end items-center">
                 <div class="bg-amber-100 rounded-full px-3 py-1">
                     <span class="text-amber-800 font-semibold">⭐ {{ number_format($product->rating, 1) }}</span>
                 </div>
@@ -147,7 +151,6 @@
 
     updatePrice();
 
-    // AJAX untuk favorite toggle
     const favForm = document.getElementById('favorite-form');
     if (favForm) {
         favForm.addEventListener('submit', function(e) {
