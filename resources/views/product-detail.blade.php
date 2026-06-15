@@ -2,100 +2,105 @@
 @section('title', $product->name)
 @section('content')
 <div class="w-full min-h-screen bg-amber-50">
-    {{-- Hero Image (Cover) --}}
-    <div class="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+    {{-- Hero Image dengan gradasi natural --}}
+    <div class="relative w-full h-[70vh] md:h-[75vh] overflow-hidden">
         <img src="{{ $product->image_url ?? 'https://placehold.co/1200x800?text=No+Image' }}" 
              alt="{{ $product->name }}" 
              class="w-full h-full object-cover">
-        {{-- Tombol Favorite --}}
-        <form action="{{ route('favorite.toggle', $product->id) }}" method="POST" id="favorite-form" class="absolute top-4 right-4 z-10">
+        
+        {{-- Gradasi dari bawah ke atas agar teks muncul natural --}}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+        
+        {{-- Tombol Favorite tetap di atas --}}
+        <form action="{{ route('favorite.toggle', $product->id) }}" method="POST" id="favorite-form" class="absolute top-4 right-4 z-20">
             @csrf
             <button type="submit" id="favorite-btn" class="bg-white rounded-full p-2 shadow-md hover:scale-105 transition">
                 <i id="favorite-icon" class="{{ ($isFavorited ?? false) ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-500' }} text-2xl"></i>
             </button>
         </form>
-        {{-- Overlay gradasi bawah untuk teks --}}
-        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
-        {{-- Nama dan deskripsi di overlay --}}
-        <div class="absolute bottom-6 left-6 text-white">
-            <h1 class="text-3xl md:text-4xl font-bold drop-shadow-lg">{{ $product->name }}</h1>
-            <p class="text-sm md:text-base opacity-90">{{ $product->description }}</p>
+        
+        {{-- Teks produk menyatu di bagian bawah gambar --}}
+        <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+            <h1 class="text-3xl md:text-5xl font-bold drop-shadow-lg mb-2">{{ $product->name }}</h1>
+            <p class="text-sm md:text-base opacity-90 max-w-2xl">{{ $product->description }}</p>
         </div>
     </div>
 
-    {{-- Detail konten (card putih) --}}
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        <div class="bg-white rounded-2xl shadow-lg p-6 -mt-8 relative z-10">
-            <div class="flex justify-end items-center">
-                <div class="bg-amber-100 rounded-full px-3 py-1">
-                    <span class="text-amber-800 font-semibold">⭐ {{ number_format($product->rating, 1) }}</span>
-                </div>
-            </div>
-
-            {{-- Options Milk & Size --}}
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-semibold text-gray-700 mb-2">Milk</h3>
-                    <div class="flex flex-wrap gap-3">
-                        @foreach(['Classic', 'Coconut', 'Almond'] as $milkOption)
-                            <button type="button" 
-                                    class="milk-option px-4 py-2 rounded-full border border-amber-800 font-medium transition
-                                           {{ $loop->first ? 'bg-amber-800 text-white' : 'bg-white text-amber-800' }}"
-                                    data-milk="{{ $milkOption }}">
-                                {{ $milkOption }}
-                            </button>
-                        @endforeach
+    {{-- Konten detail (card putih dengan efek menyatu) --}}
+    <div class="relative -mt-6 z-10">
+        <div class="max-w-6xl mx-auto px-4 pb-8">
+            <div class="bg-white rounded-t-3xl shadow-xl p-6">
+                <div class="flex justify-end items-center mb-4">
+                    <div class="bg-amber-100 rounded-full px-3 py-1">
+                        <span class="text-amber-800 font-semibold">⭐ {{ number_format($product->rating, 1) }}</span>
                     </div>
                 </div>
-                <div>
-                    <h3 class="font-semibold text-gray-700 mb-2">Size</h3>
-                    <div class="flex flex-wrap gap-3">
-                        @php
-                            $sizes = [
-                                ['value' => 280, 'label' => '280ml', 'add' => 0],
-                                ['value' => 370, 'label' => '370ml', 'add' => 5000],
-                                ['value' => 450, 'label' => '450ml', 'add' => 10000],
-                            ];
-                        @endphp
-                        @foreach($sizes as $size)
-                            <button type="button"
-                                    class="size-option px-4 py-2 rounded-full border border-amber-800 font-medium transition
-                                           {{ $loop->first ? 'bg-amber-800 text-white' : 'bg-white text-amber-800' }}"
-                                    data-price-add="{{ $size['add'] }}"
-                                    data-size="{{ $size['value'] }}">
-                                {{ $size['label'] }}
-                            </button>
-                        @endforeach
+
+                {{-- Options Milk & Size --}}
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-gray-700 mb-2">Milk</h3>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach(['Classic', 'Coconut', 'Almond'] as $milkOption)
+                                <button type="button" 
+                                        class="milk-option px-4 py-2 rounded-full border border-amber-800 font-medium transition
+                                               {{ $loop->first ? 'bg-amber-800 text-white' : 'bg-white text-amber-800' }}"
+                                        data-milk="{{ $milkOption }}">
+                                    {{ $milkOption }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-700 mb-2">Size</h3>
+                        <div class="flex flex-wrap gap-3">
+                            @php
+                                $sizes = [
+                                    ['value' => 280, 'label' => '280ml', 'add' => 0],
+                                    ['value' => 370, 'label' => '370ml', 'add' => 5000],
+                                    ['value' => 450, 'label' => '450ml', 'add' => 10000],
+                                ];
+                            @endphp
+                            @foreach($sizes as $size)
+                                <button type="button"
+                                        class="size-option px-4 py-2 rounded-full border border-amber-800 font-medium transition
+                                               {{ $loop->first ? 'bg-amber-800 text-white' : 'bg-white text-amber-800' }}"
+                                        data-price-add="{{ $size['add'] }}"
+                                        data-size="{{ $size['value'] }}">
+                                    {{ $size['label'] }}
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Harga dinamis --}}
-            <div class="mt-6">
-                <p class="text-gray-700 font-semibold">Harga:</p>
-                <p class="text-2xl font-bold text-amber-800" id="dynamic-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-            </div>
+                {{-- Harga dinamis --}}
+                <div class="mt-6">
+                    <p class="text-gray-700 font-semibold">Harga:</p>
+                    <p class="text-2xl font-bold text-amber-800" id="dynamic-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                </div>
 
-            {{-- Action Buttons --}}
-            <div class="mt-6 flex flex-col sm:flex-row gap-4">
-                <form id="addToCartForm" action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
-                    @csrf
-                    <input type="hidden" name="milk" id="selected_milk" value="Classic">
-                    <input type="hidden" name="size" id="selected_size" value="280">
-                    <input type="hidden" name="final_price" id="final_price" value="{{ $product->price }}">
-                    <button type="submit" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fas fa-shopping-cart"></i> Add to Cart
-                    </button>
-                </form>
-                <form action="{{ route('checkout.direct', $product->id) }}" method="POST" class="flex-1">
-                    @csrf
-                    <input type="hidden" name="milk" id="direct_milk" value="Classic">
-                    <input type="hidden" name="size" id="direct_size" value="280">
-                    <input type="hidden" name="final_price" id="direct_final_price" value="{{ $product->price }}">
-                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                        <i class="fas fa-bolt"></i> Order Now
-                    </button>
-                </form>
+                {{-- Action Buttons --}}
+                <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                    <form id="addToCartForm" action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
+                        @csrf
+                        <input type="hidden" name="milk" id="selected_milk" value="Classic">
+                        <input type="hidden" name="size" id="selected_size" value="280">
+                        <input type="hidden" name="final_price" id="final_price" value="{{ $product->price }}">
+                        <button type="submit" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </form>
+                    <form action="{{ route('checkout.direct', $product->id) }}" method="POST" class="flex-1">
+                        @csrf
+                        <input type="hidden" name="milk" id="direct_milk" value="Classic">
+                        <input type="hidden" name="size" id="direct_size" value="280">
+                        <input type="hidden" name="final_price" id="direct_final_price" value="{{ $product->price }}">
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                            <i class="fas fa-bolt"></i> Order Now
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
